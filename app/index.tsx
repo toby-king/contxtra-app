@@ -71,7 +71,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f3f7fa",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   logo: {
-    width: 150,
+    width: "75%",
     height: 150,
     marginBottom: 40,
   },
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f9f9f9",
-    borderRadius: 25,
+    backgroundColor: "#ffffff",
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: "#ddd",
     paddingHorizontal: 20,
