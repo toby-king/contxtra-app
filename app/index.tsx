@@ -40,6 +40,7 @@ export default function Index() {
               <TextInput
                 style={styles.input}
                 placeholder="Paste your link here..."
+               placeholderTextColor="#666"
                 value={link}
                 onChangeText={setLink}
                 multiline={false}
