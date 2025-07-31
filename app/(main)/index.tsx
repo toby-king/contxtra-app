@@ -94,7 +94,6 @@ export default function Index() {
           </View>
           
           <Image
-              placeholder="Paste X or Bluesky post link here..."
             style={styles.logo}
             contentFit="contain"
           />
