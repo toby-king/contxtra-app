@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { useState } from "react";
 import { Send, LogOut } from "lucide-react-native";
 import { useAuth } from "@/contexts/AuthContext";
+import { router } from "expo-router";
 
 export default function Index() {
   const [link, setLink] = useState("");
@@ -22,6 +23,7 @@ export default function Index() {
 
   const handleSignOut = async () => {
     await signOut();
+    router.replace('/(auth)/login');
   };
 
   return (
