@@ -124,9 +124,6 @@ export default function Index() {
               </TouchableOpacity>
             </View>
             
-            {showSent && (
-                )
-                }
           {loading && (
             <Text style={styles.loadingMessage}>Processing...</Text>
           )}
