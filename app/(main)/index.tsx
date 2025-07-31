@@ -1,23 +1,69 @@
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { Image } from "expo-image";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Send, LogOut } from "lucide-react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 
 export default function Index() {
   const [link, setLink] = useState("");
-  const [showSent, setShowSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { signOut, user } = useAuth();
 
-  const handleSubmit = () => {
-    if (link.trim()) {
-      setShowSent(true);
-      // Hide the message after 3 seconds
-      setTimeout(() => {
-        setShowSent(false);
-        setLink("");
-      }, 3000);
+  const isValidLink = useCallback((url: string) => {
+    const trimmedUrl = url.trim();
+    // Check for X (Twitter) links
+    const xPatterns = [
+      /^https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/,
+    ];
+    // Check for Bluesky links
+    const blueskyPatterns = [
+      /^https?:\/\/bsky\.app\/profile\/[\w.-]+\/post\/[\w]+/,
+    ];
+    
+    return xPatterns.some(pattern => pattern.test(trimmedUrl)) || 
+           blueskyPatterns.some(pattern => pattern.test(trimmedUrl));
+  }, []);
+
+  const handleSubmit = async () => {
+    const trimmedLink = link.trim();
+    
+    if (!trimmedLink) {
+      setError("Please enter a link");
+      return;
+    }
+
+    if (!isValidLink(trimmedLink)) {
+      setError("Please enter a valid X (Twitter) or Bluesky post link");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const response = await fetch('https://contxtra-api-267101235988.us-central1.run.app/find-articles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: trimmedLink }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.text();
+      setResult(data);
+      setLink(""); // Clear the input after successful submission
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while processing your request');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,22 +94,23 @@ export default function Index() {
           </View>
           
           <Image
-            source={require("../../assets/images/Contxtra logo-13 copy.png")}
+              placeholder="Paste X or Bluesky post link here..."
             style={styles.logo}
             contentFit="contain"
           />
           
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
+              editable={!loading}
               <TextInput
                 style={styles.input}
-                placeholder="Paste your link here..."
+              style={[styles.sendButton, (!link.trim() || loading) && styles.sendButtonDisabled]} 
                 placeholderTextColor="#666"
-                value={link}
+              disabled={!link.trim() || loading}
                 onChangeText={setLink}
                 multiline={false}
                 autoCapitalize="none"
-                autoCorrect={false}
+                color={(!link.trim() || loading) ? "#ccc" : "#333"} 
               />
               <TouchableOpacity 
                 style={[styles.sendButton, !link.trim() && styles.sendButtonDisabled]} 
@@ -78,8 +125,18 @@ export default function Index() {
             </View>
             
             {showSent && (
-              <Text style={styles.sentMessage}>SENT</Text>
-            )}
+          {loading && (
+            <Text style={styles.loadingMessage}>Processing...</Text>
+          )}
+          
+          {error && (
+            <Text style={styles.errorMessage}>{error}</Text>
+          )}
+          
+          {result && (
+            <View style={styles.resultContainer}>
+              <Text style={styles.resultText}>{result}</Text>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -164,10 +221,33 @@ const styles = StyleSheet.create({
   sendButtonDisabled: {
     backgroundColor: "#f0f0f0",
   },
-  sentMessage: {
+  loadingMessage: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4CAF50",
+    color: "#666",
+    marginTop: 15,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "#ff4444",
+    marginTop: 15,
+    textAlign: "center",
+    paddingHorizontal: 20,
+  },
+  resultContainer: {
+    marginTop: 20,
+    backgroundColor: "#ffffff",
+    borderRadius: 15,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    width: "100%",
+    maxWidth: 400,
+  },
+  resultText: {
+    fontSize: 16,
+    color: "#333",
+    lineHeight: 24,
     marginTop: 15,
   },
 });
