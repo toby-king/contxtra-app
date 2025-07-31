@@ -94,6 +94,7 @@ export default function Index() {
           </View>
           
           <Image
+            source={{ uri: "https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg" }}
             style={styles.logo}
             contentFit="contain"
           />
@@ -121,20 +122,19 @@ export default function Index() {
               </TouchableOpacity>
             </View>
             
-          {loading && (
-            <Text style={styles.loadingMessage}>Processing...</Text>
-          )}
-          
-          {error && (
-            <Text style={styles.errorMessage}>{error}</Text>
-          )}
-          
-          {result && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.resultText}>{result}</Text>
-            </View>
-          )
-          }
+            {loading && (
+              <Text style={styles.loadingMessage}>Processing...</Text>
+            )}
+            
+            {error && (
+              <Text style={styles.errorMessage}>{error}</Text>
+            )}
+            
+            {result && (
+              <View style={styles.resultContainer}>
+                <Text style={styles.resultText}>{result}</Text>
+              </View>
+            )}
           </View>
         </View>
       </ScrollView>
