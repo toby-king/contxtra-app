@@ -104,7 +104,7 @@ export default function Index() {
                 style={styles.input}
                 placeholder="Paste X or Bluesky post link here..."
                 value={link}
-                editable={!loading}
+                editable={loading ? false : true}
                 placeholderTextColor="#666"
                 onChangeText={setLink}
                 multiline={false}
