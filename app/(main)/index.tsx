@@ -101,25 +101,24 @@ export default function Index() {
           
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
-              editable={!loading}
               <TextInput
                 style={styles.input}
-              style={[styles.sendButton, (!link.trim() || loading) && styles.sendButtonDisabled]} 
+                placeholder="Paste X or Bluesky post link here..."
+                value={link}
+                editable={!loading}
                 placeholderTextColor="#666"
-              disabled={!link.trim() || loading}
                 onChangeText={setLink}
                 multiline={false}
                 autoCapitalize="none"
-                color={(!link.trim() || loading) ? "#ccc" : "#333"} 
               />
               <TouchableOpacity 
-                style={[styles.sendButton, !link.trim() && styles.sendButtonDisabled]} 
+                style={[styles.sendButton, (!link.trim() || loading) && styles.sendButtonDisabled]} 
                 onPress={handleSubmit}
-                disabled={!link.trim()}
+                disabled={!link.trim() || loading}
               >
                 <Send 
                   size={20} 
-                  color={!link.trim() ? "#ccc" : "#333"} 
+                  color={(!link.trim() || loading) ? "#ccc" : "#333"} 
                 />
               </TouchableOpacity>
             </View>
