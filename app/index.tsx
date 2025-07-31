@@ -1,6 +1,7 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { Image } from "expo-image";
 import { useState } from "react";
+import { Send } from "lucide-react-native";
 
 export default function Index() {
   const [link, setLink] = useState("");
@@ -18,90 +19,109 @@ export default function Index() {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("../assets/images/Contxtra logo-13 copy.png")}
-        style={styles.logo}
-        contentFit="contain"
-      />
-      <Text style={styles.welcomeText}>Welcome to Contxtra</Text>
-      
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Paste your link here..."
-          value={link}
-          onChangeText={setLink}
-          multiline={false}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TouchableOpacity 
-          style={styles.submitButton} 
-          onPress={handleSubmit}
-          disabled={!link.trim()}
-        >
-          <Text style={styles.submitButtonText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
-      
-      {showSent && (
-        <Text style={styles.sentMessage}>SENT</Text>
-      )}
-    </View>
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.topSection}>
+          <Image
+            source={require("../assets/images/Contxtra logo-13 copy.png")}
+            style={styles.logo}
+            contentFit="contain"
+          />
+          
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Paste your link here..."
+                value={link}
+                onChangeText={setLink}
+                multiline={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              <TouchableOpacity 
+                style={[styles.sendButton, !link.trim() && styles.sendButtonDisabled]} 
+                onPress={handleSubmit}
+                disabled={!link.trim()}
+              >
+                <Send 
+                  size={20} 
+                  color={!link.trim() ? "#ccc" : "#333"} 
+                />
+              </TouchableOpacity>
+            </View>
+            
+            {showSent && (
+              <Text style={styles.sentMessage}>SENT</Text>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#ffffff",
+  },
+  scrollContainer: {
+    flexGrow: 1,
     padding: 20,
   },
-  logo: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
+  topSection: {
+    alignItems: "center",
+    paddingTop: 60,
   },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: "#333333",
-    textAlign: "center",
+  logo: {
+    width: 150,
+    height: 150,
     marginBottom: 40,
   },
   inputContainer: {
     width: "100%",
     maxWidth: 400,
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 15,
-    fontSize: 16,
-    backgroundColor: "#f9f9f9",
-    marginBottom: 15,
-  },
-  submitButton: {
-    backgroundColor: "#fad976",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 8,
     alignItems: "center",
   },
-  submitButtonText: {
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    width: "100%",
+  },
+  input: {
+    flex: 1,
     fontSize: 16,
-    fontWeight: "600",
-    color: "#333333",
+    color: "#333",
+    paddingRight: 10,
+  },
+  sendButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: "#fad976",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sendButtonDisabled: {
+    backgroundColor: "#f0f0f0",
   },
   sentMessage: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#4CAF50",
-    marginTop: 10,
+    marginTop: 15,
   },
 });
