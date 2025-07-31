@@ -125,6 +125,8 @@ export default function Index() {
             </View>
             
             {showSent && (
+                )
+                }
           {loading && (
             <Text style={styles.loadingMessage}>Processing...</Text>
           )}
@@ -137,6 +139,8 @@ export default function Index() {
             <View style={styles.resultContainer}>
               <Text style={styles.resultText}>{result}</Text>
             </View>
+          )
+          }
           </View>
         </View>
       </ScrollView>
