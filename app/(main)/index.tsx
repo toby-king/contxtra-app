@@ -94,47 +94,53 @@ export default function Index() {
           </View>
           
           <Image
-            source={{ uri: "https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg" }}
+              placeholder="Paste X or Bluesky post link here..."
             style={styles.logo}
             contentFit="contain"
           />
           
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
+              editable={!loading}
               <TextInput
                 style={styles.input}
-                placeholder="Paste X or Bluesky post link here..."
-                value={link}
+              style={[styles.sendButton, (!link.trim() || loading) && styles.sendButtonDisabled]} 
                 placeholderTextColor="#666"
+              disabled={!link.trim() || loading}
                 onChangeText={setLink}
                 multiline={false}
                 autoCapitalize="none"
+                color={(!link.trim() || loading) ? "#ccc" : "#333"} 
               />
               <TouchableOpacity 
-                style={[styles.sendButton, (!link.trim() || loading) && styles.sendButtonDisabled]} 
+                style={[styles.sendButton, !link.trim() && styles.sendButtonDisabled]} 
                 onPress={handleSubmit}
-                disabled={!link.trim() || loading}
+                disabled={!link.trim()}
               >
                 <Send 
                   size={20} 
-                  color={(!link.trim() || loading) ? "#ccc" : "#333"} 
+                  color={!link.trim() ? "#ccc" : "#333"} 
                 />
               </TouchableOpacity>
             </View>
             
-            {loading && (
-              <Text style={styles.loadingMessage}>Processing...</Text>
-            )}
-            
-            {error && (
-              <Text style={styles.errorMessage}>{error}</Text>
-            )}
-            
-            {result && (
-              <View style={styles.resultContainer}>
-                <Text style={styles.resultText}>{result}</Text>
-              </View>
-            )}
+            {showSent && (
+                )
+                }
+          {loading && (
+            <Text style={styles.loadingMessage}>Processing...</Text>
+          )}
+          
+          {error && (
+            <Text style={styles.errorMessage}>{error}</Text>
+          )}
+          
+          {result && (
+            <View style={styles.resultContainer}>
+              <Text style={styles.resultText}>{result}</Text>
+            </View>
+          )
+          }
           </View>
         </View>
       </ScrollView>
